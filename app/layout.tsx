@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from 'next/font/google';
 import "./globals.css";
 import Footer from "@/components/Footer";
+import SessionProviderWrapper from "@/components/SessionProviderWrapper";
 
 const geist = Geist({
   subsets: ['latin'],
@@ -20,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={geist.className}>
       <body>
-        {children}
+        <SessionProviderWrapper>
+          {children}
+        </SessionProviderWrapper>
         <Footer />
       </body>
     </html>

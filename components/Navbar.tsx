@@ -2,8 +2,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { signOut, useSession } from 'next-auth/react';
 
 const Navbar = () => {
+  const { data: session } = useSession();
+
   return (
     <header className="w-full sticky top-0 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 shadow-sm">
       <div className="max-w-6xl mx-auto flex items-center h-16 px-4">
@@ -19,6 +22,11 @@ const Navbar = () => {
           <Link href="/profile">
             <Button variant="outline">Profile</Button>
           </Link>
+          {session ? (
+            <button onClick={() => signOut({ callbackUrl: '/login' })}>Logout</button>
+          ) : (
+            <a href="/login">Login</a>
+          )}
         </nav>
       </div>
     </header>
