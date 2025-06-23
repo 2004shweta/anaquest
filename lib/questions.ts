@@ -12,6 +12,13 @@ export type Question = {
   timer: number;
 };
 
+export type UserScore = {
+  score: number;
+  topic: string;
+  testType: string;
+  timestamp: Date;
+};
+
 export const questions: Question[] = [
   {
     id: 1,

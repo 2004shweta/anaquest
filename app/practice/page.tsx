@@ -4,6 +4,7 @@ import { questions, Question } from '../../lib/questions';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CheckCircle, XCircle, Flag, Bookmark } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 const unique = (arr: string[]) => Array.from(new Set(arr));
 
@@ -45,6 +46,8 @@ export default function PracticePage() {
   const [customTopics, setCustomTopics] = useState<string[]>([]);
   const [customDifficulty, setCustomDifficulty] = useState<'Easy' | 'Medium' | 'Hard' | ''>('');
   const [customNumQuestions, setCustomNumQuestions] = useState(10);
+
+  const { data: session } = useSession();
 
   // --- Timer Effect ---
   useEffect(() => {
@@ -143,6 +146,7 @@ export default function PracticePage() {
       setQuestionStartTime(Date.now());
     } else {
       setQuizStatus('finished');
+      saveQuizResult(score);
     }
   };
   
@@ -185,6 +189,22 @@ export default function PracticePage() {
     const shuffled = filteredQuestions.sort(() => 0.5 - Math.random());
     const selected = shuffled.slice(0, customNumQuestions);
     startQuiz(selected);
+  };
+
+  // Add this function to save score and update XP
+  const saveQuizResult = async (score: number) => {
+    if (!session?.user?.email) return;
+    await fetch("/api/quiz/submit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: session.user.email,
+        score,
+        topic: selectedTopic,
+        testType: "Practice", // or derive from context
+        timestamp: new Date().toISOString(),
+      }),
+    });
   };
 
   // --- Render Functions ---

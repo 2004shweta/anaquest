@@ -4,6 +4,9 @@ import React from "react";
 import Image from "next/image";
 import { CalendarDays, BookOpen, CheckCircle, BarChart2, TrendingUp, Clock, Target, Award, Play, Calendar, Star, Users, ArrowRight, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
+import {
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend
+} from 'recharts';
 
 const today = new Date().toLocaleDateString(undefined, {
   weekday: "long",
@@ -11,6 +14,104 @@ const today = new Date().toLocaleDateString(undefined, {
   month: "long",
   day: "numeric",
 });
+
+// Mock data for charts
+const scoreTrendsData = [
+  { date: 'Mon', score: 60 },
+  { date: 'Tue', score: 70 },
+  { date: 'Wed', score: 80 },
+  { date: 'Thu', score: 75 },
+  { date: 'Fri', score: 90 },
+  { date: 'Sat', score: 85 },
+  { date: 'Sun', score: 95 },
+];
+
+const accuracyData = [
+  { name: 'Correct', value: 80 },
+  { name: 'Incorrect', value: 20 },
+];
+const COLORS = ['#34d399', '#f87171'];
+
+const weakTopicsData = [
+  { topic: 'Quant', mistakes: 5 },
+  { topic: 'Verbal', mistakes: 2 },
+  { topic: 'Reasoning', mistakes: 7 },
+  { topic: 'GK', mistakes: 3 },
+];
+
+const avgTimeData = [
+  { topic: 'Quant', time: 42 },
+  { topic: 'Verbal', time: 30 },
+  { topic: 'Reasoning', time: 55 },
+  { topic: 'GK', time: 25 },
+];
+
+function ScoreTrendsChart() {
+  return (
+    <ResponsiveContainer width="100%" height={220}>
+      <LineChart data={scoreTrendsData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="date" />
+        <YAxis />
+        <Tooltip />
+        <Line type="monotone" dataKey="score" stroke="#6366f1" strokeWidth={3} dot={{ r: 5 }} />
+      </LineChart>
+    </ResponsiveContainer>
+  );
+}
+
+function AccuracyChart() {
+  return (
+    <ResponsiveContainer width="100%" height={220}>
+      <PieChart>
+        <Pie
+          data={accuracyData}
+          cx="50%"
+          cy="50%"
+          labelLine={false}
+          label={({ name, percent }) => `${name}: ${typeof percent === 'number' && !isNaN(percent) ? (percent * 100).toFixed(0) : 0}%`}
+          outerRadius={80}
+          fill="#8884d8"
+          dataKey="value"
+        >
+          {accuracyData.map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+        </Pie>
+        <Tooltip />
+        <Legend />
+      </PieChart>
+    </ResponsiveContainer>
+  );
+}
+
+function WeakTopicsChart() {
+  return (
+    <ResponsiveContainer width="100%" height={220}>
+      <BarChart data={weakTopicsData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="topic" />
+        <YAxis />
+        <Tooltip />
+        <Bar dataKey="mistakes" fill="#f59e42" />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+function AvgTimeChart() {
+  return (
+    <ResponsiveContainer width="100%" height={220}>
+      <BarChart data={avgTimeData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="topic" />
+        <YAxis label={{ value: 'Seconds', angle: -90, position: 'insideLeft' }} />
+        <Tooltip />
+        <Bar dataKey="time" fill="#6366f1" />
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -103,6 +204,30 @@ export default function DashboardPage() {
             </div>
             <BarChart2 size={32} className="text-orange-200" />
           </div>
+        </div>
+      </section>
+
+      {/* Analytics Section */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        {/* Score Trends (Line Chart) */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+          <h2 className="text-lg font-semibold mb-4">Score Trends</h2>
+          <ScoreTrendsChart />
+        </div>
+        {/* Accuracy (Pie Chart) */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+          <h2 className="text-lg font-semibold mb-4">Accuracy</h2>
+          <AccuracyChart />
+        </div>
+        {/* Weak Topics (Bar Chart) */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+          <h2 className="text-lg font-semibold mb-4">Weak Topics</h2>
+          <WeakTopicsChart />
+        </div>
+        {/* Average Time per Question (Bar Chart) */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg">
+          <h2 className="text-lg font-semibold mb-4">Avg. Time per Question</h2>
+          <AvgTimeChart />
         </div>
       </section>
 

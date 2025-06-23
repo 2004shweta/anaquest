@@ -2,25 +2,42 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BookOpen, BarChart3, Timer, GraduationCap, User, ShieldCheck, Globe, Trophy, Linkedin, Twitter, Github } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [theme, setTheme] = useState('light');
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+      document.documentElement.classList.add('dark');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const html = document.documentElement;
+    const fontClass = html.className.replace(/\bdark\b/g, '').trim();
+    if (theme === 'dark') {
+      setTheme('light');
+      html.className = fontClass;
+    } else {
+      setTheme('dark');
+      html.className = fontClass + ' dark';
+    }
+  };
+
   return (
-    <div className="flex flex-col min-h-screen bg-gradient-to-br from-[#0f172a] via-[#18181b] to-[#1e293b] text-foreground">
-      {/* Header */}
-      <header className="px-4 lg:px-8 h-20 flex items-center justify-between bg-black/60 backdrop-blur-md shadow-lg border-b border-white/10 sticky top-0 z-30">
-        <Link className="flex items-center gap-2" href="#">
-          <Globe className="w-8 h-8 text-primary" />
-          <span className="text-3xl font-extrabold tracking-tight text-white">AnaQuest</span>
-        </Link>
-        <nav className="flex items-center gap-4 sm:gap-6">
-          <Link className="text-base font-medium text-white/80 hover:text-primary transition" href="/login">
-            Login
-          </Link>
-          <Link className="text-base font-medium" href="/signup">
-            <Button className="rounded-full bg-gradient-to-r from-primary to-blue-500 text-white px-6 py-2 shadow-lg hover:from-blue-500 hover:to-primary/80 transition-all border-0">Sign Up</Button>
-          </Link>
-        </nav>
-      </header>
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-[var(--background)] to-[#1e293b] text-[var(--foreground)]">
+      {/* Dark mode toggle button at top right */}
+      <div className="absolute top-4 right-4 z-50">
+        <button
+          onClick={toggleTheme}
+          aria-label="Toggle dark mode"
+          className="px-3 py-1 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition shadow"
+        >
+          {theme === 'dark' ? '🌙' : '☀️'}
+        </button>
+      </div>
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative w-full py-24 md:py-36 flex items-center justify-center overflow-hidden">

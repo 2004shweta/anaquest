@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(409).json({ message: 'User already exists' });
     }
     const hashedPassword = await hash(password, 10);
-    await usersCollection.insertOne({ name, email, password: hashedPassword });
+    await usersCollection.insertOne({ name, email, password: hashedPassword, xp: 0, photo: '', scores: [] });
     return res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error' });
