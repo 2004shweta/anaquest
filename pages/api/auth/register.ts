@@ -12,6 +12,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: 'Missing required fields' });
   }
 
+  const adminEmails = ["admin@example.com", "superuser@example.com"];
+
   try {
     const client = await clientPromise;
     const usersCollection = client.db().collection('users');
@@ -20,7 +22,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(409).json({ message: 'User already exists' });
     }
     const hashedPassword = await hash(password, 10);
-    await usersCollection.insertOne({ name, email, password: hashedPassword, xp: 0, photo: '', scores: [] });
+    const isAdmin = adminEmails.includes(email);
+    await usersCollection.insertOne({ name, email, password: hashedPassword, xp: 0, photo: '', scores: [], admin: isAdmin });
     return res.status(201).json({ message: 'User registered successfully' });
   } catch (error) {
     return res.status(500).json({ message: 'Internal server error' });

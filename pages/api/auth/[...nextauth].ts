@@ -25,7 +25,7 @@ export default NextAuth({
         if (!isValid) {
           throw new Error('Incorrect password');
         }
-        return { id: user._id, email: user.email, name: user.name };
+        return { id: user._id, email: user.email, name: user.name, admin: user.admin };
       },
     }),
     GoogleProvider({
@@ -41,8 +41,15 @@ export default NextAuth({
     async session({ session, token }) {
       if (token) {
         session.user.id = token.sub;
+        session.user.admin = token.admin;
       }
       return session;
+    },
+    async jwt({ token, user }) {
+      if (user) {
+        token.admin = user.admin;
+      }
+      return token;
     },
   },
   pages: {

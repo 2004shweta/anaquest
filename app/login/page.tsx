@@ -16,11 +16,17 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
 
+  const isAdminLogin = searchParams.get('admin') === '1';
+
   useEffect(() => {
     if (status === 'authenticated') {
-      router.replace('/dashboard');
+      if (isAdminLogin && session?.user?.admin) {
+        router.replace('/admin');
+      } else {
+        router.replace('/dashboard');
+      }
     }
-  }, [status, router]);
+  }, [status, router, isAdminLogin, session]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -33,7 +39,7 @@ export default function LoginPage() {
     if (res?.error) {
       setError(res.error);
     } else {
-      router.push('/dashboard');
+      // After login, session will update and useEffect will handle redirect
     }
   }
 
@@ -50,6 +56,9 @@ export default function LoginPage() {
           </span>
           <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight">Login</h1>
           <p className="mt-2 text-base text-gray-600 dark:text-gray-400">Welcome back! Please login to your account.</p>
+          {isAdminLogin && (
+            <span className="mt-2 px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">Admin Login</span>
+          )}
         </div>
         <div className="text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -95,6 +104,9 @@ export default function LoginPage() {
           Login with Google
         </Button>
         {error && <p className="text-red-500 text-sm mt-2 text-center animate-pulse">{error}</p>}
+        {isAdminLogin && status === 'authenticated' && !session?.user?.admin && (
+          <p className="text-red-500 text-sm mt-2 text-center animate-pulse">You are not authorized to login as admin.</p>
+        )}
         <div className="text-center mt-4">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Don't have an account?
