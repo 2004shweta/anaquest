@@ -12,6 +12,8 @@ export default function ContactPage() {
   });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [responseMessage, setResponseMessage] = useState<string | null>(null);
+  const [responseError, setResponseError] = useState<string | null>(null);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -24,21 +26,25 @@ export default function ContactPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Reset form
-    setFormData({
-      name: "",
-      email: "",
-      subject: "",
-      message: "",
-    });
+    setResponseMessage(null);
+    setResponseError(null);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setResponseMessage('Thank you for your message! We\'ll get back to you soon.');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+      } else {
+        setResponseError(data.message || 'Failed to send message. Please try again later.');
+      }
+    } catch (error) {
+      setResponseError('Failed to send message. Please try again later.');
+    }
     setIsSubmitting(false);
-    
-    // You can add actual form submission logic here
-    alert("Thank you for your message! We'll get back to you soon.");
   };
 
   return (
@@ -219,6 +225,16 @@ export default function ContactPage() {
               />
             </div>
 
+            {responseMessage && (
+              <div className="w-full text-green-600 bg-green-100 border border-green-300 rounded-lg p-3 text-center">
+                {responseMessage}
+              </div>
+            )}
+            {responseError && (
+              <div className="w-full text-red-600 bg-red-100 border border-red-300 rounded-lg p-3 text-center">
+                {responseError}
+              </div>
+            )}
             <button
               type="submit"
               disabled={isSubmitting}

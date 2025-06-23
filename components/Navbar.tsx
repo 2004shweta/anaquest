@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -29,6 +30,7 @@ const Navbar = () => {
     <header className="w-full sticky top-0 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 shadow-sm">
       <div className="max-w-6xl mx-auto flex items-center h-16 px-4">
         <Link href="/" className="flex items-center gap-2 text-xl font-bold text-purple-600 dark:text-purple-300 tracking-tight hover:opacity-80 transition-opacity">
+          <Image src="/globe.svg" alt="AnaQuest Logo" width={32} height={32} />
           <span className="ml-2">AnaQuest</span>
         </Link>
         <nav className="ml-auto flex items-center gap-4 sm:gap-6">
