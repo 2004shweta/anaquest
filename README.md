@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📚 AnaQuest – AI-Powered Analytical Practice & Feedback Platform
 
-## Getting Started
+## 🚀 Project Overview
 
-First, run the development server:
+**AnaQuest** is a smart EdTech platform that empowers students to practice analytical questions for competitive exams and placements with real-time feedback and adaptive learning. It combines **full-stack software development** with **Generative AI** to deliver **personalized quizzes, AI-generated explanations, and dynamic performance summaries.**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🌟 Key Features
+
+* ✅ **Dynamic Question Bank**: Categorized by exam type, topic, and difficulty.
+* ✅ **Custom Quiz Builder**: Create quizzes based on selected topics and difficulty levels.
+* ✅ **AI-Powered Question Generation**: New analytical questions are auto-generated using LLMs.
+* ✅ **Instant AI-Generated Explanations**: Get detailed solutions from the AI immediately after answering.
+* ✅ **Performance Dashboard**: Track accuracy, time, and weak topics through visual analytics.
+* ✅ **Adaptive Quiz Recommendations**: Next quiz is tailored based on weak areas using AI.
+* ✅ **Natural Language Summaries**: AI-generated personalized feedback reports.
+* ✅ **Leaderboard**: Compare your performance with peers.
+* ✅ **Secure Authentication**: User login and session management using NextAuth.
+
+---
+
+## ⚙️ Tech Stack
+
+| Layer            | Technology                                     |
+| ---------------- | ---------------------------------------------- |
+| Frontend         | Next.js (TypeScript), Tailwind CSS, ShadCN UI  |
+| Backend          | Next.js API Routes, Node.js     |
+| Database         | MongoDB                    |
+| LLM API          | OpenAI GPT API (can be extended to local LLMs) |
+| State Management | React Query / Zustand                          |
+| Deployment       | Vercel (Frontend + Backend), MongoDB Atlas     |
+
+---
+
+## 💻 Folder Structure
+
+```
+anaquest/
+├── app/              # Next.js App Router
+├── components/       # Reusable UI Components
+├── features/         # Auth, Quiz, Dashboard, LLM Integration
+├── lib/              # API, Auth, Utilities
+├── prisma/           # Database Schema (if Prisma is used)
+├── public/           # Static Assets
+├── styles/           # TailwindCSS
+├── types/            # TypeScript Types
+├── middleware.ts     # Auth Middleware
+├── tailwind.config.js
+├── tsconfig.json
+└── next.config.js
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🛠️ Major Modules
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Frontend:
 
-## Learn More
+* Responsive UI with ShadCN components.
+* Quiz Interface with timer and options.
+* Dashboard with progress charts.
+* Leaderboard with live user rankings.
 
-To learn more about Next.js, take a look at the following resources:
+### Backend:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+* User authentication using NextAuth.
+* Quiz logic (create, fetch, submit).
+* API integration with OpenAI for question/explanation generation.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Generative AI (LLM):(Future)
 
-## Deploy on Vercel
+* **Dynamic Question Generator:** Prompt-based LLM to create new analytical questions.
+* **AI Explanations:** Real-time generation of step-by-step solutions.
+* **Performance Summarizer:** LLM-generated natural language summaries based on quiz results.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+
+## 🚀 How to Run Locally
+
+1. Clone the repository:
+
+   ```bash
+   git clone https://github.com/yourusername/anaquest.git
+   cd anaquest
+   ```
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+3. Setup `.env`:
+
+   ```
+   DATABASE_URL=your_mongo_uri
+   NEXTAUTH_SECRET=your_secret
+   NEXTAUTH_URL=http://localhost:3000
+   OPENAI_API_KEY=your_openai_key
+   ```
+4. Run the project:
+
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 📢 Future Enhancements
+
+* Mobile App version.
+* Real-time collaborative quizzes.
+* Multi-language support.
+* Voice-based question interactions.
+* AI-driven personalized learning paths.
+
+---
+
+## ✨ Why This Project is Unique
+
+AnaQuest is not just a static practice tool. It integrates:
+
+* **Full-stack engineering** (frontend + backend + database)
+* **Generative AI capabilities**
+* **Personalized learning strategies**
+* **Interactive and adaptive UX**
+
+This makes it a powerful showcase of **both software development and AI application skills**.
+
+---
+
