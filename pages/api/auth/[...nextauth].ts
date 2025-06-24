@@ -39,7 +39,7 @@ export default NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
-      if (token && token.sub) {
+      if (token?.sub) {
         session.user.id = token.sub;
         session.user.admin = token.admin;
       }
