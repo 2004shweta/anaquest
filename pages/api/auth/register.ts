@@ -9,22 +9,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { name, email, password } = req.body;
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: 'Missing required fields' });
+  if (!name || !email || !password || typeof password !== 'string' || password.trim().length < 6) {
+    return res.status(400).json({ message: 'Missing required fields or password too short (min 6 chars)' });
   }
+  const normalizedEmail = email.trim().toLowerCase();
 
   const adminEmails = ["harshvardhan7274@gmail.com", "superuser@example.com"];
 
   try {
     const client = await clientPromise;
     const usersCollection = client.db().collection('users');
-    const existingUser = await usersCollection.findOne({ email });
+    const existingUser = await usersCollection.findOne({ email: normalizedEmail });
     if (existingUser) {
       return res.status(409).json({ message: 'User already exists' });
     }
     const hashedPassword = await hash(password, 10);
-    const isAdmin = adminEmails.includes(email);
-    await usersCollection.insertOne({ name, email, password: hashedPassword, xp: 0, photo: '', scores: [], admin: isAdmin });
+    const isAdmin = adminEmails.includes(normalizedEmail);
+    await usersCollection.insertOne({ name, email: normalizedEmail, password: hashedPassword, xp: 0, photo: '', scores: [], admin: isAdmin });
 
     // Send welcome email
     const transporter = nodemailer.createTransport({

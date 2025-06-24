@@ -20,10 +20,14 @@ export default function SignupPage() {
     e.preventDefault();
     setError('');
     setSuccess('');
+    if (password.trim().length < 6) {
+      setError('Password must be at least 6 characters.');
+      return;
+    }
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password }),
+      body: JSON.stringify({ name, email: email.trim().toLowerCase(), password }),
     });
     if (res.ok) {
       setSuccess('Registration successful! Redirecting to login...');
