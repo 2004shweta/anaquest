@@ -25,7 +25,7 @@ export default NextAuth({
         if (!isValid) {
           throw new Error('Incorrect password');
         }
-        return { id: user._id, email: user.email, name: user.name, admin: user.admin };
+        return { id: user._id.toString(), email: user.email, name: user.name, admin: user.admin };
       },
     }),
     GoogleProvider({
