@@ -16,7 +16,7 @@ export default function LoginPage() {
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
 
-  const isAdminLogin = searchParams.get('admin') === '1';
+  const isAdminLogin = searchParams?.get('admin') === '1';
 
   useEffect(() => {
     if (status === 'authenticated') {
