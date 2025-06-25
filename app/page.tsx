@@ -176,13 +176,13 @@ export default function Home() {
         {/* Profile/Avatar Section */}
         <section className="w-full py-20 md:py-28 bg-transparent">
           <div className="container mx-auto px-4 md:px-8 flex flex-col items-center gap-10">
-            <div className="rounded-full border-8 border-primary/30 shadow-2xl p-3 bg-white/10 animate-fade-in">
+            {/* <div className="rounded-full border-8 border-primary/30 shadow-2xl p-3 bg-white/10 animate-fade-in">
               <img
                 src="https://randomuser.me/api/portraits/men/32.jpg"
                 alt="User Avatar"
                 className="w-28 h-28 rounded-full object-cover border-4 border-white/20 shadow-lg"
               />
-            </div>
+            </div> */}
             <div className="text-center animate-fade-in-delay">
               <h3 className="text-3xl font-bold text-white">Welcome, Future Analyst!</h3>
               <p className="text-lg text-white/70 max-w-md mx-auto">
