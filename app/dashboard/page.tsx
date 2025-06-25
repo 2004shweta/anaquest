@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { CalendarDays, BookOpen, CheckCircle, BarChart2, TrendingUp, Clock, Target, Award, Play, Calendar, Star, Users, ArrowRight, Plus } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -8,14 +8,6 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, Legend
 } from 'recharts';
 
-const today = new Date().toLocaleDateString(undefined, {
-  weekday: "long",
-  year: "numeric",
-  month: "long",
-  day: "numeric",
-});
-
-// Mock data for charts
 const scoreTrendsData = [
   { date: 'Mon', score: 60 },
   { date: 'Tue', score: 70 },
@@ -127,6 +119,16 @@ export default function DashboardPage() {
     totalScore: 0,
     averageScore: 0,
   };
+
+  const [today, setToday] = useState("");
+  useEffect(() => {
+    setToday(new Date().toLocaleDateString(undefined, {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }));
+  }, []);
 
   return (
     <div className="w-full min-h-screen p-4">

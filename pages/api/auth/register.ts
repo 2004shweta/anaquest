@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import clientPromise from '../../../lib/mongodb';
 import { hash } from 'bcryptjs';
 import nodemailer from 'nodemailer';
+import crypto from 'crypto';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -25,9 +26,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     const hashedPassword = await hash(password, 10);
     const isAdmin = adminEmails.includes(normalizedEmail);
-    await usersCollection.insertOne({ name, email: normalizedEmail, password: hashedPassword, xp: 0, photo: '', scores: [], admin: isAdmin });
+    // Generate OTP and expiry
+    const otp = (Math.floor(100000 + Math.random() * 900000)).toString();
+    const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
+    await usersCollection.insertOne({
+      name,
+      email: normalizedEmail,
+      password: hashedPassword,
+      xp: 0,
+      photo: '',
+      scores: [],
+      admin: isAdmin,
+      verified: false,
+      otp,
+      otpExpiry
+    });
 
-    // Send welcome email
+    // Send OTP email
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -38,12 +53,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await transporter.sendMail({
       from: `"Anaquest" <${process.env.CONTACT_GMAIL_USER}>`,
       to: email,
-      subject: '🎉 Welcome to Anaquest – Your Learning Journey Begins! 🚀',
-      text: `Hi ${name},\n\nThank you for registering with Anaquest. We are delighted to welcome you to our learning community. 🎓\n\nWith Anaquest, you can access a wide range of quizzes and resources designed to help you achieve your academic goals. If you have any questions or need assistance, our support team is here to help.\n\nWishing you success on your learning journey! 🌟\n\nBest regards,\nThe Anaquest Team`,
-      html: `<p>Hi <strong>${name}</strong>,</p><p>Thank you for registering with <strong>Anaquest</strong>. We are delighted to welcome you to our learning community. 🎓</p><p>With Anaquest, you can access a wide range of quizzes and resources designed to help you achieve your academic goals. If you have any questions or need assistance, our support team is here to help.</p><p>Wishing you success on your learning journey! <span style="font-size:1.2em;">🌟</span></p><p>Best regards,<br/>The Anaquest Team</p>`
+      subject: 'Your Anaquest OTP Verification Code',
+      text: `Hi ${name},\n\nYour OTP code for Anaquest registration is: ${otp}\n\nThis code will expire in 10 minutes.\n\nIf you did not request this, please ignore this email.`,
+      html: `<p>Hi <strong>${name}</strong>,</p><p>Your OTP code for Anaquest registration is: <strong>${otp}</strong></p><p>This code will expire in 10 minutes.</p><p>If you did not request this, please ignore this email.</p>`
     });
-    return res.status(201).json({ message: 'User registered successfully' });
+    return res.status(201).json({ message: 'OTP sent to email. Please verify to complete registration.' });
   } catch (error) {
-    return res.status(500).json({ message: 'Internal server error' });
+    console.error('Registration error:', error);
+    return res.status(500).json({ message: 'Internal server error', error: error?.toString() || 'Unknown error' });
   }
 } 

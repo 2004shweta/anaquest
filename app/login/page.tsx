@@ -12,6 +12,13 @@ function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showForgot, setShowForgot] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const [resetStep, setResetStep] = useState(1); // 1: request, 2: verify
+  const [resetOtp, setResetOtp] = useState('');
+  const [resetNewPassword, setResetNewPassword] = useState('');
+  const [resetError, setResetError] = useState('');
+  const [resetSuccess, setResetSuccess] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
@@ -31,20 +38,72 @@ function LoginForm() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError('');
+    console.log('Submitting login form');
     const res = await signIn('credentials', {
       redirect: false,
       email,
       password,
     });
+    console.log('Login result:', res);
     if (res?.error) {
       setError(res.error);
+    } else if (res?.ok) {
+      window.location.href = isAdminLogin ? '/admin' : '/dashboard';
     } else {
-      // After login, session will update and useEffect will handle redirect
+      setError('Unknown error occurred');
     }
   }
 
   async function handleGoogle() {
     await signIn('google', { callbackUrl: '/dashboard' });
+  }
+
+  async function handleForgotRequest(e: React.FormEvent) {
+    e.preventDefault();
+    setResetError('');
+    setResetSuccess('');
+    const res = await fetch('/api/auth/request-reset', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: resetEmail }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setResetSuccess('OTP sent to your email.');
+      setResetStep(2);
+    } else {
+      setResetError(data.message || 'Failed to send OTP');
+    }
+  }
+
+  async function handleForgotVerify(e: React.FormEvent) {
+    e.preventDefault();
+    setResetError('');
+    setResetSuccess('');
+    if (resetNewPassword.trim().length < 6) {
+      setResetError('Password must be at least 6 characters.');
+      return;
+    }
+    const res = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: resetEmail, otp: resetOtp, newPassword: resetNewPassword }),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      setResetSuccess('Password reset successful! You can now log in.');
+      setTimeout(() => {
+        setShowForgot(false);
+        setResetStep(1);
+        setResetEmail('');
+        setResetOtp('');
+        setResetNewPassword('');
+        setResetError('');
+        setResetSuccess('');
+      }, 1500);
+    } else {
+      setResetError(data.message || 'Failed to reset password');
+    }
   }
 
   return (
@@ -65,23 +124,88 @@ function LoginForm() {
             <Link className="ml-1 font-medium text-blue-600 hover:underline dark:text-blue-400" href="/">Home</Link>
           </p>
         </div>
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          <div className="relative">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="email">Email</label>
-            <span className="absolute left-3 top-9 text-gray-400 pointer-events-none">
-              <MailIcon className="w-5 h-5" />
-            </span>
-            <Input className="mt-1 pl-10" id="email" placeholder="you@example.com" type="email" value={email} onChange={e => setEmail(e.target.value)} required />
-          </div>
-          <div className="relative">
-            <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="password">Password</label>
-            <span className="absolute left-3 top-9 text-gray-400 pointer-events-none">
-              <LockIcon className="w-5 h-5" />
-            </span>
-            <Input className="mt-1 pl-10" id="password" placeholder="••••••••" type="password" value={password} onChange={e => setPassword(e.target.value)} required />
-          </div>
-          <Button type="submit" className="w-full text-base font-semibold">Login</Button>
-        </form>
+        {!showForgot ? (
+          <>
+            <form onSubmit={handleSubmit} autoComplete="on">
+              <div className="relative mb-4">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="email">Email</label>
+                <span className="absolute left-3 top-9 text-gray-400 pointer-events-none">
+                  <MailIcon className="w-5 h-5" />
+                </span>
+                <input
+                  className="mt-1 pl-10 w-full border rounded py-2"
+                  id="email"
+                  name="email"
+                  placeholder="you@example.com"
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  autoComplete="email"
+                />
+              </div>
+              <div className="relative mb-4">
+                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="password">Password</label>
+                <span className="absolute left-3 top-9 text-gray-400 pointer-events-none">
+                  <LockIcon className="w-5 h-5" />
+                </span>
+                <input
+                  className="mt-1 pl-10 w-full border rounded py-2"
+                  id="password"
+                  name="password"
+                  placeholder="••••••••"
+                  type="password"
+                  value={password}
+                  onChange={e => setPassword(e.target.value)}
+                  required
+                  autoComplete="current-password"
+                />
+              </div>
+              <button type="submit" className="w-full text-base font-semibold bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Login</button>
+            </form>
+            <div className="flex justify-end mt-2">
+              <button type="button" className="text-blue-600 hover:underline text-sm dark:text-blue-400" onClick={() => setShowForgot(true)}>
+                Forgot Password?
+              </button>
+            </div>
+            {error && <p className="text-red-500 text-sm mt-2 text-center animate-pulse">{error}</p>}
+          </>
+        ) : (
+          <>
+            {resetStep === 1 ? (
+              <form className="space-y-5" onSubmit={handleForgotRequest}>
+                <div className="relative">
+                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="resetEmail">Email</label>
+                  <span className="absolute left-3 top-9 text-gray-400 pointer-events-none">
+                    <MailIcon className="w-5 h-5" />
+                  </span>
+                  <Input className="mt-1 pl-10" id="resetEmail" placeholder="you@example.com" type="email" value={resetEmail} onChange={e => setResetEmail(e.target.value)} required />
+                </div>
+                <Button type="submit" className="w-full text-base font-semibold">Send OTP</Button>
+              </form>
+            ) : (
+              <form className="space-y-5" onSubmit={handleForgotVerify}>
+                <div className="relative">
+                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="resetOtp">OTP</label>
+                  <Input className="mt-1" id="resetOtp" placeholder="6-digit code" type="text" value={resetOtp} onChange={e => setResetOtp(e.target.value)} required maxLength={6} />
+                </div>
+                <div className="relative">
+                  <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="resetNewPassword">New Password</label>
+                  <span className="absolute left-3 top-9 text-gray-400 pointer-events-none">
+                    <LockIcon className="w-5 h-5" />
+                  </span>
+                  <Input className="mt-1 pl-10" id="resetNewPassword" placeholder="••••••••" type="password" value={resetNewPassword} onChange={e => setResetNewPassword(e.target.value)} required />
+                </div>
+                <Button type="submit" className="w-full text-base font-semibold">Reset Password</Button>
+              </form>
+            )}
+            <div className="flex justify-end mt-2">
+              <button type="button" className="text-blue-600 hover:underline text-sm dark:text-blue-400" onClick={() => setShowForgot(false)}>
+                Back to Login
+              </button>
+            </div>
+          </>
+        )}
         <div className="flex items-center gap-2 my-2">
           <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
           <span className="text-xs text-gray-400">or</span>
@@ -103,7 +227,8 @@ function LoginForm() {
           </svg>
           Login with Google
         </Button>
-        {error && <p className="text-red-500 text-sm mt-2 text-center animate-pulse">{error}</p>}
+        {resetError && <p className="text-red-500 text-sm mt-2 text-center animate-pulse">{resetError}</p>}
+        {resetSuccess && <p className="text-green-500 text-sm mt-2 text-center animate-pulse">{resetSuccess}</p>}
         {isAdminLogin && status === 'authenticated' && !session?.user?.admin && (
           <p className="text-red-500 text-sm mt-2 text-center animate-pulse">You are not authorized to login as admin.</p>
         )}
