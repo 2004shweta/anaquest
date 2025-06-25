@@ -41,7 +41,6 @@ anaquest/
 ├── components/       # Reusable UI Components
 ├── features/         # Auth, Quiz, Dashboard, LLM Integration
 ├── lib/              # API, Auth, Utilities
-├── prisma/           # Database Schema (if Prisma is used)
 ├── public/           # Static Assets
 ├── styles/           # TailwindCSS
 ├── types/            # TypeScript Types
