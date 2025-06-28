@@ -2,42 +2,10 @@
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BookOpen, BarChart3, Timer, GraduationCap, User, ShieldCheck, Globe, Trophy, Linkedin, Twitter, Github } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [theme, setTheme] = useState('light');
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    const html = document.documentElement;
-    const fontClass = html.className.replace(/\bdark\b/g, '').trim();
-    if (theme === 'dark') {
-      setTheme('light');
-      html.className = fontClass;
-    } else {
-      setTheme('dark');
-      html.className = fontClass + ' dark';
-    }
-  };
-
   return (
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-[var(--background)] to-[#1e293b] text-[var(--foreground)]">
-      {/* Dark mode toggle button at top right */}
-      <div className="absolute top-4 right-4 z-50">
-        <button
-          onClick={toggleTheme}
-          aria-label="Toggle dark mode"
-          className="px-3 py-1 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition shadow"
-        >
-          {theme === 'dark' ? '🌙' : '☀️'}
-        </button>
-      </div>
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative w-full py-24 md:py-36 flex items-center justify-center overflow-hidden">
@@ -45,9 +13,14 @@ export default function Home() {
           <div className="container mx-auto px-4 md:px-8 flex flex-col-reverse md:flex-row items-center gap-16 relative z-10">
             {/* Text */}
             <div className="flex-1 flex flex-col gap-8 items-start animate-fade-in">
-              <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight leading-tight text-white drop-shadow-xl">
-                Master Your <span className="bg-gradient-to-r from-primary to-blue-300 bg-clip-text text-transparent">Analytical</span> Skills
-              </h1>
+              <div className="flex flex-col gap-2">
+                <h2 className="text-4xl sm:text-6xl font-bold text-white tracking-wide drop-shadow-xl">
+                  AnaQuest
+                </h2>
+                <h1 className="text-5xl sm:text-7xl font-extrabold tracking-tight leading-tight text-white drop-shadow-xl">
+                  Master Your <span className="bg-gradient-to-r from-primary to-blue-300 bg-clip-text text-transparent">Analytical</span> Skills
+                </h1>
+              </div>
               <p className="max-w-lg text-xl text-white/80 animate-fade-in-delay">
                 Your ultimate platform for mastering analytical questions for competitive exams and placements. Interactive, beautiful, and fun!
               </p>

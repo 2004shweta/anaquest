@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { signOut, useSession } from 'next-auth/react';
@@ -7,24 +7,6 @@ import Image from 'next/image';
 
 const Navbar = () => {
   const { data: session } = useSession();
-  const [theme, setTheme] = useState('light');
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    }
-  }, []);
-
-  const toggleTheme = () => {
-    if (theme === 'dark') {
-      setTheme('light');
-      document.documentElement.classList.remove('dark');
-    } else {
-      setTheme('dark');
-      document.documentElement.classList.add('dark');
-    }
-  };
 
   return (
     <header className="w-full sticky top-0 z-20 bg-white/80 dark:bg-gray-900/80 backdrop-blur border-b border-gray-200 dark:border-gray-800 shadow-sm">
@@ -48,13 +30,6 @@ const Navbar = () => {
           ) : (
             <a href="/login">Login</a>
           )}
-          <button
-            onClick={toggleTheme}
-            aria-label="Toggle dark mode"
-            className="ml-2 px-3 py-1 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition"
-          >
-            {theme === 'dark' ? '🌙' : '☀️'}
-          </button>
         </nav>
       </div>
     </header>
