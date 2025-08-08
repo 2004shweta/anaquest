@@ -90,14 +90,20 @@ anaquest/
    ```bash
    npm install
    ```
-3. Setup `.env`:
+3. Setup `.env.local`:
 
+   Create a file named `.env.local` in the project root with the following content:
    ```
-   DATABASE_URL=your_mongo_uri
-   NEXTAUTH_SECRET=your_secret
+   MONGODB_URI=your_mongodb_connection_string
+   NEXTAUTH_SECRET=your_random_secret
    NEXTAUTH_URL=http://localhost:3000
-   OPENAI_API_KEY=your_openai_key
+   GOOGLE_CLIENT_ID=your_google_client_id
+   GOOGLE_CLIENT_SECRET=your_google_client_secret
+   CONTACT_GMAIL_USER=your_gmail_address
+   CONTACT_GMAIL_PASS=your_gmail_app_password
    ```
+   - For production, set `NEXTAUTH_URL` to your deployed URL (e.g., `https://anaquest-ixfp.vercel.app`).
+   - All variables are required for authentication and email to work.
 4. Run the project:
 
    ```bash

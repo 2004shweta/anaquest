@@ -6,6 +6,9 @@ import clientPromise from '../../../lib/mongodb';
 import { compare } from 'bcryptjs';
 import { MongoClient } from 'mongodb';
 import nodemailer from 'nodemailer';
+import { checkRequiredEnvVars } from '../../../lib/utils';
+
+checkRequiredEnvVars();
 
 export default NextAuth({
   providers: [
@@ -35,10 +38,6 @@ export default NextAuth({
         console.log('User authenticated:', user.email);
         return { id: user._id.toString(), email: user.email, name: user.name, admin: user.admin };
       },
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
   adapter: MongoDBAdapter(clientPromise),

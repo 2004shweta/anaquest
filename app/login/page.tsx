@@ -54,9 +54,7 @@ function LoginForm() {
     }
   }
 
-  async function handleGoogle() {
-    await signIn('google', { callbackUrl: '/dashboard' });
-  }
+  // Google login removed
 
   async function handleForgotRequest(e: React.FormEvent) {
     e.preventDefault();
@@ -211,22 +209,7 @@ function LoginForm() {
           <span className="text-xs text-gray-400">or</span>
           <div className="flex-1 h-px bg-gray-200 dark:bg-gray-700" />
         </div>
-        <Button onClick={handleGoogle} type="button" variant="outline" className="w-full flex items-center justify-center gap-2 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors duration-200">
-          <svg className="w-5 h-5" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g clipPath="url(#clip0_17_40)">
-              <path d="M47.5 24.5C47.5 22.8 47.3 21.2 47 19.7H24V28.3H37.3C36.7 31.2 34.8 33.6 32 35.1V40.1H39.6C44.1 36.1 47.5 30.1 47.5 24.5Z" fill="#4285F4"/>
-              <path d="M24 48C30.5 48 36.1 45.9 39.6 40.1L32 35.1C30.2 36.2 27.9 36.9 24 36.9C17.7 36.9 12.2 32.7 10.3 27.1H2.5V32.3C6.1 40.1 14.3 48 24 48Z" fill="#34A853"/>
-              <path d="M10.3 27.1C9.8 25.9 9.5 24.6 9.5 23.2C9.5 21.8 9.8 20.5 10.3 19.3V14.1H2.5C0.9 17.2 0 20.5 0 23.2C0 25.9 0.9 29.2 2.5 32.3L10.3 27.1Z" fill="#FBBC05"/>
-              <path d="M24 9.1C27.2 9.1 29.7 10.2 31.4 11.8L39.7 4.1C36.1 1 30.5 0 24 0C14.3 0 6.1 7.9 2.5 14.1L10.3 19.3C12.2 13.7 17.7 9.1 24 9.1Z" fill="#EA4335"/>
-            </g>
-            <defs>
-              <clipPath id="clip0_17_40">
-                <rect width="48" height="48" fill="white"/>
-              </clipPath>
-            </defs>
-          </svg>
-          Login with Google
-        </Button>
+  {/* Google login removed */}
         {resetError && <p className="text-red-500 text-sm mt-2 text-center animate-pulse">{resetError}</p>}
         {resetSuccess && <p className="text-green-500 text-sm mt-2 text-center animate-pulse">{resetSuccess}</p>}
         {isAdminLogin && status === 'authenticated' && !session?.user?.admin && (
